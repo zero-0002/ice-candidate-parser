@@ -1,25 +1,29 @@
-# SdpToolkit
+# getstats-report
 
-A small C# (.NET 8) console tool + library that parses an SDP offer/answer
-(RFC 4566) and prints its media sections, directions and codecs — useful when
-debugging WebRTC negotiation.
+A tiny TypeScript CLI that turns a WebRTC `getStats()` JSON dump into a Markdown
+table you can paste straight into an issue.
 
-## Build & run
+## Usage
 
 ```bash
-dotnet run -- offer.sdp
-# or pipe via stdin
-cat answer.sdp | dotnet run
+npm install
+npm run build
+node dist/cli.js getstats.json
+# or, without building:
+npm start -- getstats.json
 ```
 
-## Library
+Capture a dump in the browser:
 
-```csharp
-using SdpToolkit;
-
-var doc = SdpDocument.Parse(File.ReadAllText("offer.sdp"));
-foreach (var m in doc.Media)
-    Console.WriteLine($"{m.Kind}: {m.Codecs.Count} codecs");
+```js
+const stats = await pc.getStats();
+console.log(JSON.stringify([...stats.values()]));
 ```
+
+## Output
+
+| Dir | Kind | Codec | KiB | Loss % | Jitter (ms) | FPS |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| inbound | video | VP8 | 1024.0 | 0.12 | 3.4 | 30 |
 
 MIT licensed.
